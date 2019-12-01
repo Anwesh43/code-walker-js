@@ -6,6 +6,7 @@ const sizeFactor = 2.9
 const foreColor = "green"
 const backColor = "#BDBDBD"
 const stageHFactor = 0.8
+const delay = 30
 
 class Stage {
     constructor() {
@@ -50,6 +51,23 @@ class State {
         if (this.dir == 0) {
             this.dir = 1 - 2 * this.prevScale
             cb()
+        }
+    }
+}
+
+class Animator {
+
+    start() {
+        if (!this.animated) {
+            this.animated = true
+            this.interval = setInterval(cb, delay)
+        }
+    }
+
+    stop() {
+        if (this.animated) {
+            this.animated = false
+            clearInterval(this.interval)
         }
     }
 }
