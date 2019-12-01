@@ -2,7 +2,7 @@ const w = window.innerWidth
 const h = window.innerHeight
 const scGap = 0.02
 const strokeFactor = 0.02
-const sizeFactor = 2.9
+const sizeFactor = 8
 const foreColor = "green"
 const backColor = "#BDBDBD"
 const stageHFactor = 0.8
@@ -70,4 +70,43 @@ class Animator {
             clearInterval(this.interval)
         }
     }
+}
+
+class BallWalker {
+
+
+    constructor() {
+        this.state = new State()
+        this.lx = 0
+        this.ly = 0
+        this.x = w / 2
+        this.y = h * stageHFactor / 2
+    }
+
+    draw(context) {
+        context.save()
+        context.translate(this.x + this.lx * this.state.scale, this.y + this.ly * this.state.scale)
+        context.beginPath()
+        context.arc(0, 0, Math.min(w, h) / sizeFactor, 0, 2 * Math.PI)
+        context.fill()
+        context.restore()
+    }
+
+    update(cb) {
+        this.state.update(() => {
+            this.x += this.lx
+            this.y += this.ly
+            this.lx = 0
+            this.ly = 0
+            cb()
+        })
+    }
+
+    startUpdating(cb, lx, ly) {
+        this.lx = lx
+        this.ly = ly
+        this.state.startUpdating(cb)
+    }
+
+
 }
