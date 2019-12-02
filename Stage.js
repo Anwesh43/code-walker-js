@@ -2,11 +2,11 @@ const w = window.innerWidth
 const h = window.innerHeight
 const scGap = 0.02
 const strokeFactor = 0.02
-const sizeFactor = 8
+const sizeFactor = 18
 const foreColor = "green"
 const backColor = "#BDBDBD"
 const stageHFactor = 0.8
-const delay = 30
+const delay = 15
 
 class Stage {
     constructor() {
@@ -29,7 +29,7 @@ class Stage {
         this.context.fillStyle = backColor
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height)
         if (this.ballWalker) {
-            this.ballWalker.draw(context)
+            this.ballWalker.draw(this.context)
         }
     }
 
@@ -37,7 +37,7 @@ class Stage {
         this.ballWalker.startUpdating(lx, ly, () => {
             this.animator.start(() => {
                 this.render()
-                this.state.update(() => {
+                this.ballWalker.update(() => {
                     this.animator.stop()
                     this.render()
                 })
@@ -65,6 +65,7 @@ class Stage {
         const stage = new Stage()
         stage.initCanvas()
         stage.render()
+        return stage
     }
 }
 
@@ -79,9 +80,9 @@ class State {
     update(cb) {
         this.scale += scGap * this.dir
         if (Math.abs(this.scale - this.prevScale) > 1) {
-            this.scale = this.prevScale + this.dir
+            this.scale = 0
             this.dir = 0
-            this.prevScale = this.dir
+            this.prevScale = this.scale
             cb()
         }
     }
@@ -96,7 +97,7 @@ class State {
 
 class Animator {
 
-    start() {
+    start(cb) {
         if (!this.animated) {
             this.animated = true
             this.interval = setInterval(cb, delay)
@@ -123,6 +124,7 @@ class BallWalker {
     }
 
     draw(context) {
+        context.fillStyle = foreColor
         context.save()
         context.translate(this.x + this.lx * this.state.scale, this.y + this.ly * this.state.scale)
         context.beginPath()
@@ -147,3 +149,5 @@ class BallWalker {
         this.state.startUpdating(cb)
     }
 }
+
+const stage = Stage.init()
