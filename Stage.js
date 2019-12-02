@@ -13,7 +13,6 @@ class Stage {
         this.canvas = document.createElement('canvas')
         this.ballWalker = new BallWalker()
         this.animator = new Animator()
-        this.initCanvas()
     }
 
     initCanvas() {
@@ -47,16 +46,25 @@ class Stage {
     }
 
     moveBallLeftBy(lx) {
-        this.ballWalker.startUpdating(lx, 0)
+        this.startMoving(lx, 0)
     }
+
     moveBallRightBy(lx) {
-        this.ballWalker.startUpdating(-lx, 0)
+        this.startMoving(-lx, 0)
     }
+
     moveBallDownBy(ly) {
-        this.ballWalker.startUpdating(0, ly)
+        this.startMoving(0, ly)
     }
+
     moveBallUptBy(ly) {
-        this.ballWalker.startUpdating(0, -ly)
+        this.startMoving(0, -ly)
+    }
+
+    static init() {
+        const stage = new Stage()
+        stage.initCanvas()
+        stage.render()
     }
 }
 
