@@ -11,6 +11,9 @@ const delay = 30
 class Stage {
     constructor() {
         this.canvas = document.createElement('canvas')
+        this.ballWalker = new BallWalker()
+        this.animator = new Animator()
+        this.initCanvas()
     }
 
     initCanvas() {
@@ -26,6 +29,34 @@ class Stage {
     render() {
         this.context.fillStyle = backColor
         this.context.fillRect(0, 0, this.canvas.width, this.canvas.height)
+        if (this.ballWalker) {
+            this.ballWalker.draw(context)
+        }
+    }
+
+    startMoving(lx, ly) {
+        this.ballWalker.startUpdating(lx, ly, () => {
+            this.animator.start(() => {
+                this.render()
+                this.state.update(() => {
+                    this.animator.stop()
+                    this.render()
+                })
+            })
+        })
+    }
+
+    moveBallLeftBy(lx) {
+        this.ballWalker.startUpdating(lx, 0)
+    }
+    moveBallRightBy(lx) {
+        this.ballWalker.startUpdating(-lx, 0)
+    }
+    moveBallDownBy(ly) {
+        this.ballWalker.startUpdating(0, ly)
+    }
+    moveBallUptBy(ly) {
+        this.ballWalker.startUpdating(0, -ly)
     }
 }
 
@@ -102,11 +133,9 @@ class BallWalker {
         })
     }
 
-    startUpdating(cb, lx, ly) {
+    startUpdating(lx, ly, cb) {
         this.lx = lx
         this.ly = ly
         this.state.startUpdating(cb)
     }
-
-
 }
